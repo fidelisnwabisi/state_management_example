@@ -25,14 +25,13 @@ class MyApp extends StatelessWidget {
   }
 }
 
-class MyHomePage extends HookConsumerWidget {
+class MyHomePage extends ConsumerWidget {
   const MyHomePage({super.key, required this.title});
 
   final String title;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final counter2 = useState(0);
     final counter = ref.watch(counterProvider);
     return Scaffold(
       appBar: AppBar(
@@ -50,10 +49,6 @@ class MyHomePage extends HookConsumerWidget {
               "Counter1: ${counter.toString()}",
               style: Theme.of(context).textTheme.headlineMedium,
             ),
-            Text(
-              "Counter2: ${counter2.value}",
-              style: Theme.of(context).textTheme.headlineMedium,
-            ),
           ],
         ),
       ),
@@ -62,8 +57,7 @@ class MyHomePage extends HookConsumerWidget {
         children: [
           FloatingActionButton(
             onPressed: () {
-              final counterValue = ref.read(counterProvider.notifier);
-              counterValue.state = counterValue.state + 1;
+              ref.read(counterProvider.notifier).increment();
             },
             tooltip: 'Increment',
             child: const Icon(Icons.add),
@@ -71,10 +65,10 @@ class MyHomePage extends HookConsumerWidget {
           const SizedBox(height: 20),
           FloatingActionButton(
             onPressed: () {
-              counter2.value++;
+              ref.read(counterProvider.notifier).decrement();
             },
-            tooltip: 'Increment',
-            child: const Icon(Icons.add),
+            tooltip: 'Decrement',
+            child: const Icon(Icons.remove),
           ),
         ],
       ), // This trailing comma makes auto-formatting nicer for build methods.
