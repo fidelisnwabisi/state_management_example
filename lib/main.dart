@@ -1,11 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:state_management_example/counter_state.dart';
-import 'package:state_management_example/screen_a.dart';
-import 'package:state_management_example/screen_b.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
 
 void main() {
-  runApp(const ProviderScope(child: MyApp()));
+  runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {
@@ -24,14 +21,14 @@ class MyApp extends StatelessWidget {
   }
 }
 
-class MyHomePage extends ConsumerWidget {
+class MyHomePage extends HookWidget {
   const MyHomePage({super.key, required this.title});
 
   final String title;
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    debugPrint("Build Called");
+  Widget build(BuildContext context) {
+    final counter = useState(0);
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
@@ -44,32 +41,16 @@ class MyHomePage extends ConsumerWidget {
             const Text(
               'You have pushed the button this many times:',
             ),
-            const SizedBox(height: 20),
             Text(
-              ref.watch(counterProvider).toString(),
+              counter.value.toString(),
               style: Theme.of(context).textTheme.headlineMedium,
             ),
-            const SizedBox(height: 20),
-            ElevatedButton(
-              onPressed: () {
-                Navigator.of(context)
-                    .push(MaterialPageRoute(builder: (_) => const ScreenA()));
-              },
-              child: const Text("Go to Screen A"),
-            ),
-            const SizedBox(height: 20),
-            ElevatedButton(
-                onPressed: () {
-                  Navigator.of(context)
-                      .push(MaterialPageRoute(builder: (_) => const ScreenB()));
-                },
-                child: const Text("Go to Screen B")),
           ],
         ),
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          ref.read(counterProvider.notifier).state++;
+          counter.value++;
         },
         tooltip: 'Increment',
         child: const Icon(Icons.add),
